@@ -38,7 +38,7 @@ const Dashboard: React.FC = () => {
   const [graphType, setGraphType] = useState<string>('All');
 
   useEffect(() => {
-    fetch('http://localhost:3001/data')
+    fetch('https://dd10.onrender.com')
       .then(response => response.json())
       .then(data => {
         setData(data.AuthorWorklog.rows);
