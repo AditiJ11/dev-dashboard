@@ -38,24 +38,25 @@ const Dashboard: React.FC = () => {
   const [selectedDeveloper, setSelectedDeveloper] = useState<string>('All');
   const [graphType, setGraphType] = useState<string>('All');
 
-  useEffect(() => {
-    fetch('https://dec-backend-2.onrender.com/data')
-      .then(response => response.json())
-      .then(data => {
-        if (data && data.AuthorWorklog && Array.isArray(data.AuthorWorklog.rows)) {
-          setData(data.AuthorWorklog.rows);
-        } else {
-          console.error('Unexpected data structure:', data);
-          setError('Unexpected data structure');
-        }
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-        setError('Error fetching data');
-        setLoading(false);
-      });
-  }, []);
+ useEffect(() => {
+  fetch('https://dec-backend-2.onrender.com/data')
+    .then(response => response.json())
+    .then(responseData => {
+      if (responseData && responseData.data && responseData.data.AuthorWorklog) {
+        setData(responseData.data.AuthorWorklog); // Update here to access AuthorWorklog directly
+      } else {
+        console.error('Unexpected data structure:', responseData);
+        setError('Unexpected data structure');
+      }
+      setLoading(false);
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+      setError('Error fetching data');
+      setLoading(false);
+    });
+}, []);
+
 
   const handleDeveloperChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedDeveloper(e.target.value);
