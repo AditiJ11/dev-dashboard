@@ -34,6 +34,7 @@ interface Developer {
 const Dashboard: React.FC = () => {
   const [data, setData] = useState<Developer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedDeveloper, setSelectedDeveloper] = useState<string>('All');
   const [graphType, setGraphType] = useState<string>('All');
 
@@ -41,11 +42,17 @@ const Dashboard: React.FC = () => {
     fetch('https://dec-backend-2.onrender.com/data')
       .then(response => response.json())
       .then(data => {
-        setData(data.AuthorWorklog.rows);
+        if (data && data.AuthorWorklog && Array.isArray(data.AuthorWorklog.rows)) {
+          setData(data.AuthorWorklog.rows);
+        } else {
+          console.error('Unexpected data structure:', data);
+          setError('Unexpected data structure');
+        }
         setLoading(false);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
+        setError('Error fetching data');
         setLoading(false);
       });
   }, []);
@@ -60,6 +67,10 @@ const Dashboard: React.FC = () => {
 
   if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
   }
 
   if (!data.length) {
